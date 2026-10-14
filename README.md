@@ -19,6 +19,9 @@ VPN **AmneziaWG** (собственная сборка kernel-модуля по�
 | Маршрутизация | Podkop + sing-box |
 | Пакетная система | `apk` (OpenWrt 24.10+/snapshot) |
 
+> ✅ **Проверено**: туннель поднят (handshake), egress через `awg0` = IP VPN-сервера,
+> Podkop направляет домены из списков через туннель. Грабли и диагностика — `docs/06-troubleshooting.md`.
+
 ## Аппаратные характеристики
 
 | Параметр | Значение |
@@ -52,7 +55,8 @@ VPN **AmneziaWG** (собственная сборка kernel-модуля по�
 │   ├── 02-amneziawg.md       # сборка kmod-amneziawg из OpenWrt SDK
 │   ├── 03-podkop.md          # установка и настройка Podkop/sing-box
 │   ├── 04-server.md          # AmneziaWG-сервер (VDS) — обзор
-│   └── 05-secrets.md         # работа с секретами (agent-vault)
+│   ├── 05-secrets.md         # работа с секретами (agent-vault)
+│   └── 06-troubleshooting.md # диагностика: найденные грабли и проверки
 ├── scripts/
 │   ├── build-amneziawg-sdk.sh   # сборка пакетов AmneziaWG в SDK
 │   ├── tftp-recovery.sh         # TFTP-сервер для recovery роутера

@@ -11,5 +11,5 @@ config settings 'settings'
 config section 'main'
 	option connection_type 'vpn'
 	option interface 'awg0'
-	option community_lists 'russia_inside'
+	list community_lists 'russia_inside'   # ВАЖНО: list, не option (см. docs/03-podkop.md)
 	option enabled '1'

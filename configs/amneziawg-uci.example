@@ -17,6 +17,7 @@ config interface 'awg0'
 	option awg_h2 '1818386959'
 	option awg_h3 '1918415293'
 	option awg_h4 '1111313905'
+	option nohostroute '1'   # если default-маршрут задан вне netifd (см. docs/02-amneziawg.md)
 
 config amneziawg_awg0
 	option public_key '<SERVER_PUBLIC_KEY>'

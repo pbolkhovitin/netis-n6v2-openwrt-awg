@@ -47,6 +47,26 @@ LAN (br-lan) ──► nftables (Podkop) ──┬─► awg0 (AmneziaWG) ──
 - `main.connection_type 'vpn'`, `main.interface 'awg0'`.
 - `main.community_lists` — списки доменов (напр. `russia_inside`, `russia_outside`, `geoblock`).
 
+## ⚠️ `community_lists` — это UCI-список (`list`), не скаляр (`option`)
+
+Если список задан скаляром, Podkop **молча ничего не маршрутизирует**: в логе будет
+«Processing community list routing rules», но sing-box-конфиг останется без ruleset.
+
+Причина: в `/lib/functions.sh` этой сборки `config_list_foreach()` итерируется по
+`<option>_LENGTH` / `<option>_ITEMn`, которые UCI создаёт для `list`, но не для `option`.
+
+```sh
+# НЕВЕРНО (скаляр) — именно так задаёт установщик по умолчанию:
+uci set podkop.main.community_lists='russia_inside'
+
+# ВЕРНО (список):
+uci -q delete podkop.main.community_lists
+uci add_list podkop.main.community_lists='russia_inside'
+uci commit podkop && podkop restart
+```
+
+Проверка: `jq '.route.rule_set' /etc/sing-box/config.json` → должен появиться remote ruleset.
+
 ## Интернет роутеру при пустом WAN (временно)
 
 Пока провайдер не подключён, интернет роутеру можно дать через PC (NAT):
@@ -67,8 +87,18 @@ echo nameserver 8.8.8.8 > /etc/resolv.conf
 ## Проверка
 
 ```sh
-/etc/init.d/podkop status
-podkop get_status
-podkop check_sing_box
-nft list ruleset | grep -i podkop
+podkop get_status                 # {"enabled":1,"status":"enabled"}
+podkop check_sing_box             # installed/version_ok/service_exist = 1
+jq '.route.rule_set' /etc/sing-box/config.json     # НЕ пуст при заданных community_lists
+nft list table inet PodkopTable   # регистр важен; set podkop_subnets + chains mangle/proxy
+ip rule | grep podkop             # 105: fwmark 0x100000 -> table podkop
 ```
+
+С клиента (должен ходить через роутер):
+
+```sh
+nslookup www.youtube.com 192.168.1.1   # -> 198.18.x.x (fakeip), если домен в списке
+curl -s https://api.ipify.org           # -> IP VPN-сервера (для доменов из списка)
+```
+
+> Полная карта проверок и грабли — `docs/06-troubleshooting.md`.

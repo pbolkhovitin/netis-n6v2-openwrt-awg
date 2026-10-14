@@ -94,6 +94,28 @@ Peer (секция `amneziawg_<name>`): `public_key`, `preshared_key`, `allowed_
 > `route_allowed_ips=0` — маршрутизацию через туннель оставляем Podkop/sing-box,
 > а не netifd (селективная маршрутизация).
 
+## Подводные камни на роутере
+
+### Регистрация netifd-протокола
+После установки `amneziawg-tools` протокол `amneziawg` может быть ещё не зарегистрирован
+(ubus показывал `proto: none`). Лечится `/etc/init.d/network restart`.
+
+### `nohostroute=1`
+Если интернет на роутере идёт по маршруту, о котором netifd не знает (вручную добавленный
+`default` либо NAT с ПК), `proto_add_host_dependency` для endpoint возвращает ошибку, и netifd
+**сразу удаляет** только что созданный интерфейс:
+
+```sh
+uci set network.awg0.nohostroute='1'
+uci commit network      # при обычном WAN можно вернуть 0
+```
+
+### Проверка
+```sh
+awg show awg0                                       # handshake + параметры обфускации
+curl -s --interface awg0 https://api.ipify.org      # должен вернуть IP VPN-сервера
+```
+
 ## Совместимость с сервером
 
 AmneziaWG 3.1 (клиент) обратно совместим с классическим форматом обфускации
