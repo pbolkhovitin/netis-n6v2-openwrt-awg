@@ -67,9 +67,44 @@ uci commit podkop && podkop restart
 
 Проверка: `jq '.route.rule_set' /etc/sing-box/config.json` → должен появиться remote ruleset.
 
-## Интернет роутеру при пустом WAN (временно)
+## Временный аплинк при пустом WAN
 
-Пока провайдер не подключён, интернет роутеру можно дать через PC (NAT):
+Пока провайдер не подключён, интернет роутеру (и туннелю) можно дать одним из способов.
+Оба — **временные**; управление роутером всё равно удобнее держать по LAN-кабелю.
+
+### Вариант A — WiFi-STA на телефон/хот-спот
+
+Роутер подключается к чужой Wi-Fi как клиент (СТА) и раздаёт интернет себе. В проекте
+использовался именно этот способ (радио 2.4 ГГц на время переводилось в STA).
+
+```sh
+# На роутере:
+uci set network.wwan=interface
+uci set network.wwan.proto='dhcp'
+uci add_list firewall.@zone[1].network='wwan'      # добавить в зону wan
+uci set wireless.wwan0=wifi-iface
+uci set wireless.wwan0.device='radio0'
+uci set wireless.wwan0.mode='sta'
+uci set wireless.wwan0.network='wwan'
+uci set wireless.wwan0.ssid='<SSID телефона>'
+uci set wireless.wwan0.encryption='psk2'
+uci set wireless.wwan0.key='<пароль>'
+uci set wireless.default_radio0.disabled='1'       # освободить радио под STA
+uci commit && wifi reload
+ifstatus wwan                                       # должен получить адрес по DHCP
+```
+
+Свернуть (вернуть 2.4 ГГц в режим AP) — так и было сделано в финале:
+
+```sh
+uci -q delete wireless.wwan0
+uci set wireless.default_radio0.disabled='0'
+uci -q delete network.wwan
+uci del_list firewall.@zone[1].network='wwan'
+uci commit && wifi reload
+```
+
+### Вариант B — NAT на ПК
 
 ```sh
 # На PC (Linux):
@@ -81,8 +116,11 @@ ip route add default via <IP_PC> dev br-lan
 echo nameserver 8.8.8.8 > /etc/resolv.conf
 ```
 
-> ⚠️ Это **временная** схема. Убирайте после подключения провайдера:
+> ⚠️ Уборка после подключения провайдера:
 > `sudo sysctl -w net.ipv4.ip_forward=0`; `sudo iptables -t nat -D POSTROUTING -o <uplink> -j MASQUERADE`.
+
+> ℹ️ Пока аплинк — временный, для endpoint-а `awg0` нужен `nohostroute=1` (см. `02-amneziawg.md`).
+> С настоящим WAN его можно вернуть в `0`.
 
 ## Проверка
 

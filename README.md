@@ -22,6 +22,22 @@ VPN **AmneziaWG** (собственная сборка kernel-модуля по�
 > ✅ **Проверено**: туннель поднят (handshake), egress через `awg0` = IP VPN-сервера,
 > Podkop направляет домены из списков через туннель. Грабли и диагностика — `docs/06-troubleshooting.md`.
 
+## Состояние развёртывания (2026-10-14)
+
+| Что | Статус |
+|---|---|
+| Прошивка | OpenWrt SNAPSHOT `r37278-7af0c0f531`, ядро `6.18.55`, `netis,n6-v2` |
+| Пароль root / LuCI | задан; `luci-ssl` установлен (HTTP/HTTPS на `192.168.1.1`) |
+| Wi-Fi | 2.4 ГГц и 5 ГГц в режиме **AP** (SSID `OpenWrt`) |
+| AmneziaWG | `kmod-amneziawg` + `amneziawg-tools` собраны и установлены; `awg0` поднят (`10.8.1.7/32`) |
+| Podkop | `connection_type=vpn` → `awg0`, community-список `russia_inside` (задан как UCI-**`list`**) |
+| Туннель | ✅ handshake есть; egress `awg0` = IP VPN-сервера; YouTube через туннель → `200` |
+| Uplink | ⏳ **отсутствует** — временные схемы (WiFi-STA на телефон, NAT с ПК) свёрнуты; ждём кабель провайдера в WAN |
+
+> Роутер сейчас **без интернета по объективной причине**: к WAN не подключён провайдер, а
+> временный аплинк убран. Туннель и Podkop заработают автоматически, как только появится WAN.
+> Порядок действий после подключения провайдера — `docs/07-status.md`.
+
 ## Аппаратные характеристики
 
 | Параметр | Значение |
@@ -56,11 +72,13 @@ VPN **AmneziaWG** (собственная сборка kernel-модуля по�
 │   ├── 03-podkop.md          # установка и настройка Podkop/sing-box
 │   ├── 04-server.md          # AmneziaWG-сервер (VDS) — обзор
 │   ├── 05-secrets.md         # работа с секретами (agent-vault)
-│   └── 06-troubleshooting.md # диагностика: найденные грабли и проверки
+│   ├── 06-troubleshooting.md # диагностика: найденные грабли и проверки
+│   └── 07-status.md          # состояние развёртывания и runbook
 ├── scripts/
 │   ├── build-amneziawg-sdk.sh   # сборка пакетов AmneziaWG в SDK
 │   ├── tftp-recovery.sh         # TFTP-сервер для recovery роутера
-│   └── configure-awg0.sh        # настройка интерфейса awg0 (шаблон, без секретов)
+│   ├── configure-awg0.sh        # настройка интерфейса awg0 (шаблон, без секретов)
+│   └── verify-tunnel.sh         # проверка туннеля и Podkop на роутере
 └── configs/
     ├── amneziawg-uci.example    # пример UCI-конфига awg0
     └── podkop-uci.example       # пример секции podkop
