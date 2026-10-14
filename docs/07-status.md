@@ -10,11 +10,11 @@
 | Прошивка | OpenWrt SNAPSHOT `r37278-7af0c0f531`, ядро `6.18.55` |
 | Пакетная система | `apk` |
 | LuCI | `luci-ssl` установлен, HTTP/HTTPS на `192.168.1.1` (логин `root`) |
-| Wi-Fi | `phy0-ap0` (2.4 ГГц, канал 1) и `phy1-ap0` (5 ГГц, канал 36), SSID `OpenWrt` |
+| Wi-Fi | `phy0-ap0` (2.4 ГГц, канал 1) и `phy1-ap0` (5 ГГц, канал 36), SSID `OpenWrt`, **WPA2 (CCMP)**; пароль временный — сменить |
 | VPN-клиент | `kmod-amneziawg` (сборка под ядро) + `amneziawg-tools` |
 | `awg0` | proto `amneziawg`, `10.8.1.7/32`, прослушивает локальный порт |
 | Podkop | `connection_type=vpn` → `awg0`, `list community_lists 'russia_inside'` |
-| Uplink | **отсутствует** (нет кабеля провайдера). Временный WiFi-STA свёрнут |
+| Uplink (провайдер) | кабеля пока нет. WAN переведён в **PPPoE** (JustLan/Квант, Липецк, `mtu 1492`, `keepalive 10 60`), логин/пароль — плейсхолдеры; временный WiFi-STA и NAT с ПК свёрнуты |
 
 ## Схема
 
@@ -29,15 +29,19 @@ LAN (br-lan 192.168.1.1) ──► PodkopTable (nft) ──► tproxy 127.0.0.1:
 
 ## Runbook: подключили кабель провайдера в WAN
 
-1. **WAN поднимется сам** (интерфейс `wan`, DHCP) — проверьте адрес и интернет:
+> WAN уже переведён в **PPPoE** (детали — `docs/08-provider-quant.md`): остаётся вписать
+> логин/пароль и зарегистрировать MAC у провайдера.
+
+1. **Впишите логин/пароль PPPoE** (LuCI: Network → Interfaces → WAN, протокол PPPoE — либо UCI):
    ```sh
-   ifstatus wan | grep -E '"up"|"address"'
+   uci set network.wan.username='<ЛОГИН>'; uci set network.wan.password='<ПАРОЛЬ>'
+   uci commit network; /etc/init.d/network reload
+   ifstatus wan | grep -E '"up"|"address"'    # должен быть получен IP
    ping -c3 8.8.8.8
    ```
-2. **Уберите `nohostroute`** (был нужен для временного аплинка):
-   ```sh
-   uci set network.awg0.nohostroute='0'; uci commit network; ifup awg0
-   ```
+   Не поднимается → MAC не зарегистрирован у провайдера (см. `docs/08-provider-quant.md`).
+2. **`nohostroute`** уже выставлен в `0` (штатное значение при реальном WAN). Проверка:
+   `uci get network.awg0.nohostroute` → `0`.
 3. **Проверьте туннель** (см. `scripts/verify-tunnel.sh`):
    ```sh
    awg show awg0                                       # handshake, transfer ≠ 0
