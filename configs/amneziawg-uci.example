@@ -1,0 +1,28 @@
+# Пример UCI-конфига интерфейса awg0 (proto amneziawg)
+# /etc/config/network — значения-заглушки, реальные секреты НЕ коммитить.
+#
+# Применить можно через: scripts/configure-awg0.sh client.conf
+
+config interface 'awg0'
+	option proto 'amneziawg'
+	option private_key '<CLIENT_PRIVATE_KEY>'   # секрет
+	option addresses '10.8.1.7/32'
+	option mtu '1420'
+	option awg_jc '3'
+	option awg_jmin '10'
+	option awg_jmax '50'
+	option awg_s1 '106'
+	option awg_s2 '29'
+	option awg_h1 '69045419'
+	option awg_h2 '1818386959'
+	option awg_h3 '1918415293'
+	option awg_h4 '1111313905'
+
+config amneziawg_awg0
+	option public_key '<SERVER_PUBLIC_KEY>'
+	option preshared_key '<PSK>'                # секрет
+	option endpoint_host '<SERVER_IP>'
+	option endpoint_port '44636'
+	option allowed_ips '0.0.0.0/0'
+	option route_allowed_ips '0'                # маршрутизацию делает Podkop
+	option persistent_keepalive '25'

@@ -1,0 +1,15 @@
+# Пример секции Podkop (/etc/config/podkop)
+# connection_type 'vpn' + готовый интерфейс awg0 (см. amneziawg-uci.example).
+
+config settings 'settings'
+	option dns_type 'udp'
+	option dns_server '77.88.8.8'
+	option bootstrap '77.88.8.8'
+	option source_network_interfaces 'br-lan'
+	option config_path '/etc/sing-box/config.json'
+
+config section 'main'
+	option connection_type 'vpn'
+	option interface 'awg0'
+	option community_lists 'russia_inside'
+	option enabled '1'

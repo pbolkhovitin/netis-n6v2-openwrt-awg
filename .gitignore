@@ -1,0 +1,31 @@
+# Секреты и ключи — НИКОГДА не коммитить
+*.key
+*.pem
+*.conf
+!configs/*.example
+client.conf
+psk.key
+wg0.conf
+*.vpn
+vpn://*
+
+# Артефакты сборки / прошивки
+*.bin
+*.itb
+*.fip
+*.bin.apk
+*.apk
+backup/
+*.tar.zst
+bin/
+build_dir/
+staging_dir/
+dl/
+tmp/
+log/
+*.log
+
+# Кеши и мусор
+__pycache__/
+*.pyc
+.DS_Store

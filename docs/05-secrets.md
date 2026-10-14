@@ -1,0 +1,33 @@
+# 05 — Секреты (agent-vault)
+
+Все секреты проекта хранятся в **HashiCorp Vault** (KV v2) и доступны через обёртку
+`agent-vault` (область `secret/agent/<project>/<name>`). В репозиторий коммитятся **только
+имена** секретов.
+
+## Инвентарь секретов (проект `pbolk`)
+
+| Имя секрета | Назначение |
+|---|---|
+| `amnezia router netis-n6v2 client` | AmneziaWG-конфиг клиента роутера (приватный ключ, PSK) |
+| `podkop netis-n6v2 subscription` | Ссылка `vpn://` AmneziaVPN (SSH-доступ к серверу) |
+
+## Использование (значение не покидает дочерний процесс)
+
+```sh
+# Извлечь конфиг в защищённый файл
+agent-vault use 'amnezia router netis-n6v2 client' --project pbolk -- '
+  umask 077; printf "%s\n" "$VAULT_PASSWORD" > /tmp/awg/client.conf
+'
+
+# SSH к серверу по паролю из ссылки (пароль через env, не в argv)
+agent-vault use 'podkop netis-n6v2 subscription' --project pbolk -- '
+  # ... распарсить vpn:// → SSHPASS ... ; sshpass -e ssh root@<host> ...
+'
+```
+
+## Правила
+
+- Никогда не печатать значения секретов в чат/лог/файлы проекта.
+- `agent-vault` резолвит проект по имени текущей папки → для проекта `pbolk`
+  **обязательно** указывать `--project pbolk`.
+- Если пароль оказался в чате — сразу в Vault и напомнить о ротации.
