@@ -11,6 +11,7 @@
 | `amnezia router netis-n6v2 client` | AmneziaWG-конфиг клиента роутера (приватный ключ, PSK) |
 | `podkop netis-n6v2 subscription` | Ссылка `vpn://` AmneziaVPN (SSH-доступ к серверу) |
 | `tecno wifi psk` | Пароль Wi-Fi телефона TECNO (был нужен для временного аплинка, уже свёрнут) |
+| `netis n6v2 wifi psk` | Временный пароль Wi-Fi роутера (AP `OpenWrt`, WPA2) — сменить после установки |
 
 ## ⚠️ К ротации
 

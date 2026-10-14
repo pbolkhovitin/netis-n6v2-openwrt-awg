@@ -28,11 +28,11 @@ VPN **AmneziaWG** (собственная сборка kernel-модуля по�
 |---|---|
 | Прошивка | OpenWrt SNAPSHOT `r37278-7af0c0f531`, ядро `6.18.55`, `netis,n6-v2` |
 | Пароль root / LuCI | задан; `luci-ssl` установлен (HTTP/HTTPS на `192.168.1.1`) |
-| Wi-Fi | 2.4 ГГц и 5 ГГц в режиме **AP** (SSID `OpenWrt`) |
+| Wi-Fi | 2.4 ГГц и 5 ГГц в режиме **AP** (SSID `OpenWrt`, **WPA2 (CCMP)**); пароль временный — сменить |
 | AmneziaWG | `kmod-amneziawg` + `amneziawg-tools` собраны и установлены; `awg0` поднят (`10.8.1.7/32`) |
 | Podkop | `connection_type=vpn` → `awg0`, community-список `russia_inside` (задан как UCI-**`list`**) |
 | Туннель | ✅ handshake есть; egress `awg0` = IP VPN-сервера; YouTube через туннель → `200` |
-| Uplink | ⏳ **отсутствует** — временные схемы (WiFi-STA на телефон, NAT с ПК) свёрнуты; ждём кабель провайдера в WAN |
+| Провайдер (WAN) | ⏳ нет кабеля; WAN подготовлен под **PPPoE** (JustLan/Квант, Липецк) — `docs/08-provider-quant.md` |
 
 > Роутер сейчас **без интернета по объективной причине**: к WAN не подключён провайдер, а
 > временный аплинк убран. Туннель и Podkop заработают автоматически, как только появится WAN.
@@ -73,7 +73,8 @@ VPN **AmneziaWG** (собственная сборка kernel-модуля по�
 │   ├── 04-server.md          # AmneziaWG-сервер (VDS) — обзор
 │   ├── 05-secrets.md         # работа с секретами (agent-vault)
 │   ├── 06-troubleshooting.md # диагностика: найденные грабли и проверки
-│   └── 07-status.md          # состояние развёртывания и runbook
+│   ├── 07-status.md          # состояние развёртывания и runbook
+│   └── 08-provider-quant.md  # подключение провайдера «Квант» (JustLan, PPPoE)
 ├── scripts/
 │   ├── build-amneziawg-sdk.sh   # сборка пакетов AmneziaWG в SDK
 │   ├── tftp-recovery.sh         # TFTP-сервер для recovery роутера
