@@ -22,17 +22,19 @@ VPN **AmneziaWG** (собственная сборка kernel-модуля по�
 > ✅ **Проверено**: туннель поднят (handshake), egress через `awg0` = IP VPN-сервера,
 > Podkop направляет домены из списков через туннель. Грабли и диагностика — `docs/06-troubleshooting.md`.
 
-## Состояние развёртывания (2026-10-14)
+## Состояние развёртывания (2026-10-21)
 
 | Что | Статус |
 |---|---|
 | Прошивка | OpenWrt SNAPSHOT `r37278-7af0c0f531`, ядро `6.18.55`, `netis,n6-v2` |
 | Пароль root / LuCI | задан; `luci-ssl` установлен (HTTP/HTTPS на `192.168.1.1`) |
-| Wi-Fi | 2.4 ГГц и 5 ГГц в режиме **AP** (SSID `OpenWrt`, **WPA2 (CCMP)**); пароль временный — сменить |
-| AmneziaWG | `kmod-amneziawg` + `amneziawg-tools` собраны и установлены; `awg0` поднят (`10.8.1.7/32`) |
+| LuCI-протокол AWG | `luci-proto-amneziawg 3.1.0-r1` + `resolveip` — `awg0` редактируется в вебе (`docs/09-luci.md`) |
+| Тема LuCI | `luci-theme-proton2025 1.4.4-r1` (`mediaurlbase=/luci-static/proton2025`) |
+| Wi-Fi | **AP**: `ComTex2` (2.4 ГГц) и `ComTex5` (5 ГГц), **WPA2 (CCMP)**; пароль временный — сменить |
+| AmneziaWG | `kmod-amneziawg` + `amneziawg-tools` собраны и установлены; `awg0` (`10.8.1.7/32`) создаётся при живом аплинке |
 | Podkop | `connection_type=vpn` → `awg0`, community-список `russia_inside` (задан как UCI-**`list`**) |
-| Туннель | ✅ handshake есть; egress `awg0` = IP VPN-сервера; YouTube через туннель → `200` |
-| Провайдер (WAN) | ⏳ нет кабеля; WAN подготовлен под **PPPoE** (JustLan/Квант, Липецк) — `docs/08-provider-quant.md` |
+| Туннель | ✅ проверен через временный аплинк: handshake, egress `awg0` = IP VPN-сервера, YouTube → `200` |
+| Провайдер (WAN) | ⏳ **кабеля нет** (`wan` carrier=0); WAN подготовлен под **PPPoE** (JustLan/Квант, Липецк, MTU 1492) — `docs/08-provider-quant.md` |
 
 > Роутер сейчас **без интернета по объективной причине**: к WAN не подключён провайдер, а
 > временный аплинк убран. Туннель и Podkop заработают автоматически, как только появится WAN.
@@ -74,7 +76,8 @@ VPN **AmneziaWG** (собственная сборка kernel-модуля по�
 │   ├── 05-secrets.md         # работа с секретами (agent-vault)
 │   ├── 06-troubleshooting.md # диагностика: найденные грабли и проверки
 │   ├── 07-status.md          # состояние развёртывания и runbook
-│   └── 08-provider-quant.md  # подключение провайдера «Квант» (JustLan, PPPoE)
+│   ├── 08-provider-quant.md  # подключение провайдера «Квант» (JustLan, PPPoE)
+│   └── 09-luci.md            # LuCI: протокол amneziawg и тема Proton2025
 ├── scripts/
 │   ├── build-amneziawg-sdk.sh   # сборка пакетов AmneziaWG в SDK
 │   ├── tftp-recovery.sh         # TFTP-сервер для recovery роутера

@@ -24,7 +24,7 @@
 |---|---|
 | WAN | протокол **PPPoE**, `mtu 1492`, `keepalive 10 60`, `service` пусто; логин/пароль — **плейсхолдеры** |
 | WAN IPv6 | `wan6` через `@wan` (dhcpv6 поверх PPPoE) |
-| Wi‑Fi | 2.4 ГГц + 5 ГГц, SSID `OpenWrt`, **WPA2 (CCMP)**; временный пароль (сменить!) |
+| Wi‑Fi | 2.4 ГГц (`ComTex2`) + 5 ГГц (`ComTex5`), **WPA2 (CCMP)**; временный пароль (сменить!) |
 | VPN | `awg0` (AmneziaWG), `nohostroute=0`; Podkop → `awg0` |
 
 ## Что нужно от абонента (до подключения)

@@ -84,3 +84,15 @@ curl -s https://api.ipify.org                     # IP провайдера (н�
   для remote rule-set — безвредны.
 - Каталог `/etc/podkop` может отсутствовать — списки хранятся как sing-box rule-set в
   `/tmp/sing-box/rulesets` (и в кэше sing-box), это нормально.
+
+## LuCI
+
+### «Unsupported protocol type» у интерфейса `awg0`
+Симптом: в LuCI у `awg0` — «Unsupported protocol type. Install protocol extensions...», хотя
+туннель работает. Причина: не установлен пакет **`luci-proto-amneziawg`** (`amneziawg-tools`
+даёт только netifd-протокол). Установка (пер-таргетный `.apk` из релизов
+`Slava-Shchipunov/awg-openwrt`) и проверка — `docs/09-luci.md`.
+
+> После установки обязательны `rm -rf /tmp/luci-*`, `/etc/init.d/rpcd restart` и жёсткое
+> обновление браузера (`Ctrl+Shift+R`), иначе ошибка остаётся из-за кэша JS.
+
