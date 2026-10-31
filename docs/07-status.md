@@ -12,11 +12,11 @@
 | LuCI | `luci-ssl` установлен, HTTP/HTTPS на `192.168.1.1` (логин `root`) |
 | LuCI-протокол AWG | `luci-proto-amneziawg 3.1.0-r1` + `resolveip` — в вебе `awg0` редактируется как AmneziaWG (см. `docs/09-luci.md`) |
 | Тема LuCI | `luci-theme-proton2025 1.4.4-r1`, `luci.main.mediaurlbase=/luci-static/proton2025` |
-| Wi-Fi | **AP**: `phy0-ap0` — `ComTex2` (2.4 ГГц, канал 1), `phy1-ap0` — `ComTex5` (5 ГГц, канал 36); **WPA2 (CCMP)**; пароль временный — сменить |
+| Wi-Fi | **AP**: `phy0-ap0` — `<SSID_2G>` (2.4 ГГц, канал 1), `phy1-ap0` — `<SSID_5G>` (5 ГГц, канал 36); **WPA2 (CCMP)**; пароль временный — сменить |
 | VPN-клиент | `kmod-amneziawg` (сборка под ядро) + `amneziawg-tools` |
 | `awg0` | proto `amneziawg`, `10.8.1.7/32`; **при отсутствии аплинка netifd устройство не создаёт** (`NO_DEVICE`) |
 | Podkop | `connection_type=vpn` → `awg0`, `list community_lists 'russia_inside'`; стартует только при живом интернете (иначе `DNS check failed`) |
-| Uplink (провайдер) | **кабеля нет** (`wan` carrier=0). WAN переведён в **PPPoE** (JustLan/Квант, Липецк, `mtu 1492`, `keepalive 10 60`), логин/пароль — плейсхолдеры; временный WiFi-STA (TECNO) и NAT с ПК свёрнуты |
+| Uplink (провайдер) | **кабеля нет** (`wan` carrier=0). WAN переведён в **PPPoE** (JustLan/Квант, `<город>`, `mtu 1492`, `keepalive 10 60`), логин/пароль — плейсхолдеры; временный WiFi-STA (TECNO) и NAT с ПК свёрнуты |
 
 ## Схема
 
